@@ -1,6 +1,7 @@
 import audio.SoundFX;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
+
 import drawables.agents.Pacman;
 import drawables.agents.ghosts.*;
 import drawables.layout.Field;
@@ -8,8 +9,10 @@ import drawables.layout.GameOverScreen;
 import drawables.layout.Maze;
 import drawables.layout.StartScreen;
 import drawables.layout.blocks.Block;
+
 import screen.IScreen;
 import screen.Screen;
+
 import step.Timer;
 import utils.*;
 
@@ -28,9 +31,13 @@ public class Application {
 
     private static void startScreen(IScreen screen) throws InterruptedException {
         StartScreen startScreen  = new StartScreen();
-        startScreen.draw(screen);
+        Timer timer = Timer.getTimer();
+        timer.addSteppable(startScreen);
 
+        SoundFX startThemeSong = new SoundFX("pacman_theme.wav");
         SoundFX btnPressSound = new SoundFX("btn_press.wav");
+
+        Clip startThemeClip = startThemeSong.play(startThemeSong.getSoundFile());
 
         while (true){
             KeyStroke keyStroke1 = screen.getInput();
@@ -38,7 +45,9 @@ public class Application {
             if (keyStroke1 != null && (keyStroke1.getKeyType() == KeyType.Enter
                     || keyStroke1.getKeyType() == KeyType.EOF)) {
 
+                startThemeSong.stop(startThemeClip);
                 btnPressSound.play(btnPressSound.getSoundFile());
+                timer.removeSteppable(startScreen);
                 break;
             }
         }
@@ -115,6 +124,7 @@ public class Application {
 
         // Steppables
         Timer timer = Timer.getTimer();
+
         timer.addSteppable(pacman);
         timer.addSteppable(inky);
         timer.addSteppable(blinky);
@@ -165,8 +175,12 @@ public class Application {
 
                 sirenSound.stop(sirenClip);
 
-                timer.removeSteppable(maze);
                 timer.removeSteppable(pacman);
+                timer.removeSteppable(inky);
+                timer.removeSteppable(blinky);
+                timer.removeSteppable(pinky);
+                timer.removeSteppable(clyde);
+                timer.removeSteppable(maze);
 
                 break;
             }
@@ -175,8 +189,12 @@ public class Application {
                 sirenSound.stop(sirenClip);
                 pointSaver.save();
 
-                timer.removeSteppable(maze);
                 timer.removeSteppable(pacman);
+                timer.removeSteppable(inky);
+                timer.removeSteppable(blinky);
+                timer.removeSteppable(pinky);
+                timer.removeSteppable(clyde);
+                timer.removeSteppable(maze);
 
                 break;
             }

@@ -27,6 +27,8 @@ public class Screen implements IScreen {
     private com.googlecode.lanterna.screen.Screen screen;
     private TextGraphics graphics;
 
+    public static int nSecs = (int) System.currentTimeMillis() / 1000;
+
     public Screen() {
         initScreen();
     }
