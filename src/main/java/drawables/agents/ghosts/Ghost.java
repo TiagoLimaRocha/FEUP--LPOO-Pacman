@@ -7,15 +7,8 @@ import behaviors.scatter.ScatterBehavior;
 import drawables.agents.Agent;
 import drawables.agents.MovingAgent;
 import drawables.agents.Pacman;
-import drawables.layout.Field;
-import screen.IScreen;
-import step.Steppable;
-
-import utils.Consts;
 import utils.Direction;
 import utils.GhostStates;
-
-import javax.sound.sampled.Clip;
 
 public abstract class Ghost extends MovingAgent {
 
@@ -99,6 +92,5 @@ public abstract class Ghost extends MovingAgent {
             else if (state.isFrightened())
                 nextDirection = frightenedBehavior.wander(direction);
         }
-
     }
 }

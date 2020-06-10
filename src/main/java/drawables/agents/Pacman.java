@@ -1,13 +1,9 @@
 package drawables.agents;
 
 import audio.SoundFX;
-
-import com.googlecode.lanterna.TextColor;
 import drawables.agents.ghosts.Ghost;
 import drawables.layout.Maze;
-
 import screen.IScreen;
-
 import utils.Consts;
 
 import javax.sound.sampled.Clip;
@@ -56,7 +52,7 @@ public class Pacman extends MovingAgent {
     @Override
     public void hitBy(Ghost ghost){
         if (ghost.getState().isFrightened())
-            this.addPoints((int) ((Integer) (Consts.Pacman.POINT_INCREMENT * 20) + (Consts.Pacman.POINT_INCREMENT * 10 * (100-lives) * 0.1)));
+            this.addPoints(200 + 10 * (100-lives));
         else {
             try {
                 this.die();
@@ -103,7 +99,7 @@ public class Pacman extends MovingAgent {
             this.resetPosition();
 
             Clip deathClip = deathSound.play(deathSound.getSoundFile());
-            Thread.sleep(1500);
+            Thread.sleep(2500);
             deathSound.stop(deathClip);
         }
     }

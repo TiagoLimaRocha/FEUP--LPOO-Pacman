@@ -22,5 +22,12 @@
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
     <runtimeBits>64/32</runtimeBits>
+    <opt>&quot;-splash:C:\#Workspace\Playground\Java\Pacman/pac-man_text-based-edition.png&quot;</opt>
   </jre>
+  <splash>
+    <file>C:\#Workspace\Playground\Java\Pacman\pac-man_text-based-edition.png</file>
+    <waitForWindow>true</waitForWindow>
+    <timeout>60</timeout>
+    <timeoutErr>true</timeoutErr>
+  </splash>
 </launch4jConfig>

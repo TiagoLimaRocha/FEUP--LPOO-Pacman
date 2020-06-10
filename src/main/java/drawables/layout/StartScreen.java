@@ -6,6 +6,7 @@ import screen.IScreen;
 import screen.Screen;
 import step.Steppable;
 import utils.Consts;
+import utils.ScreenType;
 
 public class StartScreen implements IDrawable, Steppable {
 
@@ -33,6 +34,6 @@ public class StartScreen implements IDrawable, Steppable {
 
     @Override
     public void step(){
-        this.draw(Screen.getScreen());
+        this.draw(Screen.getScreen(ScreenType.GAME));
     }
 }

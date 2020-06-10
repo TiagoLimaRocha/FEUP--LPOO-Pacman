@@ -1,6 +1,7 @@
 package screen;
 
 import com.googlecode.lanterna.SGR;
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -10,6 +11,7 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.swing.AWTTerminalFontConfiguration;
 import utils.Consts;
+import utils.ScreenType;
 
 import java.awt.*;
 import java.io.File;
@@ -29,8 +31,8 @@ public class Screen implements IScreen {
 
     public static int nSecs = (int) System.currentTimeMillis() / 1000;
 
-    public Screen() {
-        initScreen();
+    public Screen(ScreenType st) {
+        initScreen(st);
     }
 
     @Override
@@ -77,33 +79,63 @@ public class Screen implements IScreen {
         }
     }
 
-    public static Screen getScreen() {
+    public static Screen getScreen(ScreenType st) {
         if (instance == null)
-            instance = new Screen();
+            instance = new Screen(st);
+        else if (st == ScreenType.HIGHSCORES)
+            instance = new Screen(st);
 
         return instance;
     }
 
-    private void initScreen() {
+    private void initScreen(ScreenType st) {
 
         DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
+        File fontFile;
+        Font font;
+        GraphicsEnvironment ge;
+        Terminal terminal;
+        AWTTerminalFontConfiguration fontConfig;
+
         screen = null;
 
         try {
-            File fontFile = new File("my_font.ttf");
-            Font font =  Font.createFont(Font.TRUETYPE_FONT, fontFile);
 
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(font);
+            switch (st){
+                case GAME:
+                    fontFile = new File("game_font.ttf");
+                    font =  Font.createFont(Font.TRUETYPE_FONT, fontFile);
 
-            Font pacFont = font.deriveFont(Font.PLAIN, 16);
-            AWTTerminalFontConfiguration fontConfig = AWTTerminalFontConfiguration.newInstance(pacFont);
+                    ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                    ge.registerFont(font);
+
+                    Font pacFont = font.deriveFont(Font.PLAIN, 16);
+                    fontConfig = AWTTerminalFontConfiguration.newInstance(pacFont);
+
+                    defaultTerminalFactory.setTerminalEmulatorFontConfiguration(fontConfig);
+
+                    break;
+
+                case HIGHSCORES:
+                    fontFile = new File("score_font.ttf");
+                    font =  Font.createFont(Font.TRUETYPE_FONT, fontFile);
+
+                    ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                    ge.registerFont(font);
+
+                    Font scoresFont = font.deriveFont(Font.PLAIN, 16);
+                    fontConfig = AWTTerminalFontConfiguration.newInstance(scoresFont);
+
+                    defaultTerminalFactory.setTerminalEmulatorFontConfiguration(fontConfig);
+
+                    break;
+            }
 
             defaultTerminalFactory.setTerminalEmulatorTitle("PAC-MAN .txt edition");
             defaultTerminalFactory.setForceAWTOverSwing(true);
-            defaultTerminalFactory.setTerminalEmulatorFontConfiguration(fontConfig);
+            defaultTerminalFactory.setInitialTerminalSize(new TerminalSize(200, 200));
 
-            Terminal terminal = defaultTerminalFactory.createTerminal();
+            terminal = defaultTerminalFactory.createTerminal();
             screen = new TerminalScreen(terminal);
 
             screen.startScreen();

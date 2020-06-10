@@ -2,7 +2,6 @@ package drawables.layout;
 
 import drawables.IDrawable;
 import drawables.agents.Agent;
-import drawables.agents.ghosts.Ghost;
 import screen.IScreen;
 import utils.Consts;
 import utils.Direction;
@@ -36,7 +35,10 @@ public class Field implements IDrawable {
     public boolean accept(Agent agent) {
         if (!locked) {
             locked = true;
-            for (Agent otherAgent : agents)
+
+            List<Agent> agentsDup = agents;
+
+            for (Agent otherAgent : agentsDup)
                 agent.collideWith(otherAgent);
 
             agents.removeIf(Agent::isRemoved);

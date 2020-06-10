@@ -9,6 +9,8 @@ enables him to overpower the Monsters for additional score.
 
 This project was developed by *Tiago Filipe Lima Rocha* and *Dániel Morvai*  for LPOO 2020.
 
+![](images/gameplay.gif)
+
 
 ### Implemented features
 
@@ -20,12 +22,9 @@ This project was developed by *Tiago Filipe Lima Rocha* and *Dániel Morvai*  fo
 
 * **Eating pac-dots**: If Pacman hits a dot on the maze, it collects it.
 
+* **Eating Ghosts**: If Pacman hits a ghost on the maze while they're frightened (after eating a power pellet), it collects it.
+
 * **Ghosts**: Four ghosts roam the maze, trying to catch Pac-Man
-
-* **Score**: The score is updated incrementally with each pac-dot summing 10 pts.
-
-
-### Planned features
 
 * **Ghost strategies**:  Ghosts have intelligent strategies implemented, according to each ghost "personality".
 
@@ -35,8 +34,53 @@ This project was developed by *Tiago Filipe Lima Rocha* and *Dániel Morvai*  fo
 
 * **Loosing the game**: When all lives have been lost, the game ends and a game over screen is shown in the playfield. 
 
+* **Score**: The score is updated incrementally with each pac-dot summing 10 pts, saved to a file and showcased at game over.
+
+
 
 ### Design
+
+#### Sepparate the logic from the viewable content while maintaining an updatable structure
+
+**Problem in Context**
+
+
+**The Pattern**
+
+We solved the problem by implementing a variant of the MVC pattern.
+
+**Implementation**
+
+In our rendition of the game, we created a Screen class that's responsible for the creation of the screen and terminal, each class has a draw method that is called in a steppable class that uses a timer to keep track of each step of everything in the game, this works as our view. And then in the drawables package lie all the our models within the game (i.e. the pacman, pellets, ghosts, maze, etc). The game loop acts as the controller.
+
+**Consequences**
+
+This solution (1) makes our code more reusable; 
+(2) allowed us for simmultaneous development, as we worked simultaneously and uninterruptedly on the controller or the model or the views;
+(3) has high cohesion and loose coupling, enabling for logical groupings of related actions on a controller as well as the views for a specific model, (for instance the movable agents have all logic in common being grouped together, and in another group we have the non-movable agents that behave differently and consist of another group);
+(4) models can have multiple views;
+(5) provides for better testability value;
+
+
+#### Decouple the progression of game time from user input and processor speed.
+
+**Problem in Context**
+
+Keep the game running even when the user isn't providing any input. And when he does, update it's current state and render everything accordingly.
+
+**The Pattern**
+
+We solved the problem by implementing the Game Loop pattern. The game loop runs continuously during gameplay. Each turn of the loop, it processes user input without blocking, updates the game state, and renders the game. It tracks the passage of time to control the rate of gameplay.
+
+**Implementation**
+
+Upon initialization of the loop, all the assets are first loaded up and stored in variables. Those variable are then used within the loop, being update with each iteration according to the current state of the game and the current processed user input in the event loop, providing logic and renderization of the game. 
+
+**Consequences**
+
+This solution provided us total control over the development of the game, designing it specifically for our needs as the development progressed. It made everything very maleable and easily changeable.
+Not only that but it allows us to control the game's speed at a fixed update time step, variable rendering, It adapts to playing both too slowly and too fast. As long as the game can update in real time, the game won’t fall behind. If the player’s machine is top-of-the-line, it will respond with a smoother gameplay experience.
+
 
 #### Timing should be consisten for the whole game
 
@@ -157,7 +201,7 @@ This mode lasts only for a few seconds and then changes back to the "Chase" mode
 The “Frightened” mode occurs when Pac-Man eats an energizer within the maze. There are four energizers located in the maze and all four ghosts change 
 mode. The ghosts turn dark blue and wander around in the maze being vulnerable. They will flash moments before they return to either the Scatter or 
 Chase mode.     
-     
+      
 **The Pattern**
 
 We solved the problem by using the **Strategy Pattern**. According to the Strategy Pattern, the behaviour that varies is placed into a separate class to allow us to make changes to those behaviours without affecting the parts that stays the same. Furthermore, the pattern aligns to the design principle to “Program to an Interface, and not to an Implementation” so that the three modes of a ghost can be defined as interfaces, and the different implementations of the modes of movement can be implemented in separate classes.
@@ -236,10 +280,12 @@ This problem can be found in the [Dot](https://github.com/FEUP-LPOO/lpoo-2020-g4
 
 The reason for this problem is the *Visitor pattern*. Each class extending *Agent* has to implement the methods needed for the pattern.
 
-Ways to improve:
-* implementing different logic for collisions
-* Dividing *Agent* superclass into new superclasses which don't leave methods empty. (Extract subclass)
+The ghost's state logic is overly complex and could be done with the State pattern instead.
 
+Ways to improve:
+* implementing different logic for collisions;
+* Dividing *Agent* superclass into new superclasses which don't leave methods empty. (Extract subclass);
+* Implementing the State pattern;
 
 #### Speculative Generality
 [Collectible](https://github.com/FEUP-LPOO/lpoo-2020-g46/blob/master/src/main/java/drawables/agents/collectibles/Collectible.java) class has no function at the moment. It is created for future purposes in case of introducing a new kind of collectibles (power dot) 

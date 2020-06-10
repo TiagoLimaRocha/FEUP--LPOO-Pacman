@@ -1,12 +1,12 @@
 package drawables.layout;
 
 import drawables.IDrawable;
-import drawables.agents.Pacman;
 import drawables.agents.collectibles.Collectible;
 import drawables.layout.blocks.Block;
 import screen.IScreen;
 import screen.Screen;
 import step.Steppable;
+import utils.ScreenType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class Maze implements IDrawable, Steppable {
 
     @Override
     public void step() {
-        this.draw(Screen.getScreen());
+        this.draw(Screen.getScreen(ScreenType.GAME));
     }
 
     @Override

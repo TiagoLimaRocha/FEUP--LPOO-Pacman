@@ -4,10 +4,7 @@ import com.googlecode.lanterna.input.KeyType;
 
 import drawables.agents.Pacman;
 import drawables.agents.ghosts.*;
-import drawables.layout.Field;
-import drawables.layout.GameOverScreen;
-import drawables.layout.Maze;
-import drawables.layout.StartScreen;
+import drawables.layout.*;
 import drawables.layout.blocks.Block;
 
 import screen.IScreen;
@@ -23,7 +20,7 @@ import java.util.List;
 
 public class Application {
     public static void main(String[] args) throws Exception {
-        IScreen screen = Screen.getScreen();
+        IScreen screen = Screen.getScreen(ScreenType.GAME);
 
         startScreen(screen);
         initGame(screen);
@@ -203,6 +200,28 @@ public class Application {
         gameOver(screen);
     }
 
+    private static void highScores(IScreen screen) throws InterruptedException {
+        HighscoreScreen highscoreScreen = new HighscoreScreen();
+        highscoreScreen.draw(screen);
+
+        SoundFX btnPressSound = new SoundFX("btn_press.wav");
+
+        while (true){
+            KeyStroke keyStroke = screen.getInput();
+
+             if (keyStroke != null && (keyStroke.getKeyType() == KeyType.Escape
+                    || keyStroke.getKeyType() == KeyType.EOF)){
+
+                // CLOSE GAME
+                btnPressSound.play(btnPressSound.getSoundFile());
+                Thread.sleep(100);
+                screen.close();
+
+                return;
+            }
+        }
+    }
+
     private static void gameOver(IScreen screen) throws InterruptedException {
         GameOverScreen gameOverScreen  = new GameOverScreen();
         gameOverScreen.draw(screen);
@@ -221,10 +240,14 @@ public class Application {
             } else if (keyStroke3 != null && (keyStroke3.getKeyType() == KeyType.Escape
                     || keyStroke3.getKeyType() == KeyType.EOF)){
 
-                // CLOSE GAME
+                // HIGHSCORES
                 btnPressSound.play(btnPressSound.getSoundFile());
                 Thread.sleep(100);
+
                 screen.close();
+
+                IScreen ScoresScreen = Screen.getScreen(ScreenType.HIGHSCORES);
+                highScores(ScoresScreen);
 
                 return;
             }
@@ -235,7 +258,6 @@ public class Application {
 
     /**
      * Converts key to Direction enum, if no key given returns null
-     *  - TODO: extract this all logic to some Steppable class timed by a Timer
      */
     private static Direction keyToDir(KeyStroke keyStroke) {
         if (keyStroke != null) {
